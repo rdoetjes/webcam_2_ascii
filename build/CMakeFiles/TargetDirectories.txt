@@ -1,0 +1,3 @@
+/Users/rdoetjes/develop/ascii/build/CMakeFiles/ascii.dir
+/Users/rdoetjes/develop/ascii/build/CMakeFiles/edit_cache.dir
+/Users/rdoetjes/develop/ascii/build/CMakeFiles/rebuild_cache.dir
