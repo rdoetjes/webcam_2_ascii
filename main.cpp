@@ -28,6 +28,7 @@ void turnToAscii(Mat *input)
         std::string s = "";
         for (int j = 0; j < input->cols; j++)
         {
+            s += "\033[1;32m";
             s += chars[map(input->at<uint8_t>(i,j), 255, 0, 0 ,strlen(chars)-1)];
         }
         std::cout << s << std::endl;
@@ -49,9 +50,8 @@ int main()
     while (running)
     {
         cap >> image;
-        processImage(&image, &small, 160, 48);
+        processImage(&image, &small, 102, 51);
         cv::imshow("RAW", image);
-        cv::imshow("SMALL", small);
         turnToAscii(&small);
         if (waitKey(30) >= 0)
             running = false;
