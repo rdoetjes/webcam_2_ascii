@@ -51,7 +51,7 @@ int main()
     {
         cap >> image;
         processImage(&image, &small, 140, 51);
-        cv::imshow("RAW", image);
+        //cv::imshow("RAW", image);
         turnToAscii(&small);
         if (waitKey(30) >= 0)
             running = false;
