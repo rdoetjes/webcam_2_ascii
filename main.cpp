@@ -3,29 +3,34 @@
 
 using namespace cv;
 
-void setResolutionCam(VideoCapture *cap, const uint width, const uint height){
+void setResolutionCam(VideoCapture *cap, const uint width, const uint height)
+{
     cap->set(CAP_PROP_FRAME_WIDTH, width);
     cap->set(CAP_PROP_FRAME_HEIGHT, height);
 }
 
 int main()
 {
-    
-    Mat image;
+
+    Mat image, small;
+    bool running = true;
+
     VideoCapture cap(0);
     if (!cap.isOpened())
-    {
         return 1;
-    }
 
-    setResolutionCam(&cap, 640, 480);
+    setResolutionCam(&cap, 80, 24);
 
-    while (1)
+    while (running)
     {
-        cap >> image;
+        cap >> image;   
         cv::imshow("RAW", image);
-        waitKey(25);
+        cvtColor(image, small, COLOR_BGR2GRAY);
+        cv::resize(small, small, Size(80, 24), INTER_LINEAR);
+        cv::imshow("SMALL", small);
+
+        if  (waitKey(30) >=0 ) running = false;
     }
-    
+
     return 0;
 }
