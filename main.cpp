@@ -9,6 +9,11 @@ void setResolutionCam(VideoCapture *cap, const uint width, const uint height)
     cap->set(CAP_PROP_FRAME_HEIGHT, height);
 }
 
+void processImage(Mat *input, Mat *output){
+    cvtColor(*input, *output, COLOR_BGR2GRAY);
+    cv::resize(*output, *output, Size(80, 24), INTER_LINEAR);
+}
+
 int main()
 {
 
@@ -23,10 +28,9 @@ int main()
 
     while (running)
     {
-        cap >> image;   
+        cap >> image; 
+        processImage(&image, &small) ; 
         cv::imshow("RAW", image);
-        cvtColor(image, small, COLOR_BGR2GRAY);
-        cv::resize(small, small, Size(80, 24), INTER_LINEAR);
         cv::imshow("SMALL", small);
 
         if  (waitKey(30) >=0 ) running = false;
