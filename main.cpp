@@ -46,6 +46,8 @@ int main()
         return 1;
 
     setResolutionCam(&cap, 640, 480);
+    std::cout << "Set your terminal to 140x51" << std::endl;
+    std::cin.get();
 
     while (running)
     {
