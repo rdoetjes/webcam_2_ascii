@@ -9,10 +9,10 @@ void setResolutionCam(VideoCapture *cap, const uint width, const uint height)
     cap->set(CAP_PROP_FRAME_HEIGHT, height);
 }
 
-void processImage(Mat *input, Mat *output)
+void processImage(Mat *input, Mat *output, const int width, const int height)
 {
     cvtColor(*input, *output, COLOR_BGR2GRAY);
-    cv::resize(*output, *output, Size(160, 48), INTER_LINEAR);
+    cv::resize(*output, *output, Size(width, height), INTER_LINEAR);
 }
 
 long map(int x, int in_min, int in_max, int out_min, int out_max) {
@@ -49,7 +49,7 @@ int main()
     while (running)
     {
         cap >> image;
-        processImage(&image, &small);
+        processImage(&image, &small, 160, 48);
         cv::imshow("RAW", image);
         cv::imshow("SMALL", small);
         turnToAscii(&small);
