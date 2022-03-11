@@ -55,7 +55,7 @@ int main()
         processImage(&image, &small, 140, 51);
         //cv::imshow("RAW", image);
         turnToAscii(&small);
-        if (waitKey(30) >= 0)
+        if (waitKey(20) >= 0)
             running = false;
     }
 
