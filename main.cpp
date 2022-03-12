@@ -1,6 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <thread>
+#include <sys/stat.h>
+#include <unistd.h>
 
 using namespace cv;
 
@@ -27,6 +29,9 @@ height is the height that the output image should become
 */
 void imageDesatAndResize(Mat *input, Mat *output, const uint width, const uint height)
 {
+  if (input == NULL)
+    return;
+
   cvtColor(*input, *output, COLOR_BGR2GRAY);
   cv::resize(*output, *output, Size(width, height), INTER_LINEAR);
 }
@@ -56,6 +61,9 @@ input is the rescaled, grey scale image to be mapped in ascii chars
 */
 void turnImageToAscii(Mat *input)
 {
+  if (input == NULL)
+    return;
+
   int cn = input->channels();
   static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._         ";
 
@@ -77,17 +85,42 @@ void t_resize(Mat *image, const int width, const int height)
   cv::resize(*image, *image, Size(width, height), INTER_LINEAR);
 }
 
-int main()
+inline bool file_exists(const char *name)
+{
+  struct stat buffer;
+  return (stat(name, &buffer) == 0);
+}
+
+bool arguments(VideoCapture *cap, int argc, char **args)
+{
+  std::cout << argc;
+  if (argc == 1)
+    cap->open(0);
+  else if (file_exists(args[1]))
+    cap->open(args[1]);
+  else
+    return false;
+
+  return true;
+}
+
+int main(int argc, char **argv)
 {
 
   Mat image, small;
   bool running = true;
+  VideoCapture cap;
 
-  VideoCapture cap(0);
+  if (!arguments(&cap, argc, argv))
+  {
+    std::cerr << "Can't open video source" << std::endl;
+    exit(1);
+  }
+
   if (!cap.isOpened())
     return 1;
 
-  //smallest native resolution this web cam has.
+  // smallest native resolution this web cam has.
   setResolutionCam(&cap, 640, 480);
 
   std::cout << "Set your terminal to 140x51" << std::endl;
@@ -96,19 +129,22 @@ int main()
   while (running)
   {
     cap >> image;
-    //turns the image into a 140, 51 pixel black and white image, that will map to 140x51 chars
+    if (image.empty())
+      return 0;
+
+    // turns the image into a 140, 51 pixel black and white image, that will map to 140x51 chars
     imageDesatAndResize(&image, &small, 140, 51);
 
-    //resize the life feed to 320x240 to display, and capture keyboard events
+    // resize the life feed to 320x240 to display, and capture keyboard events
     std::thread thread1(t_resize, &image, 320, 240);
 
-    //takes the small black and white image and maps each pixel to a character and prints it to the terminal
+    // takes the small black and white image and maps each pixel to a character and prints it to the terminal
     std::thread thread2(turnImageToAscii, &small);
 
     thread1.join();
     thread2.join();
 
-    //show the web cam feed
+    // show the web cam feed
     cv::imshow("RAW", image);
 
     if (waitKey(41) >= 0)
