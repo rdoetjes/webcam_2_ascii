@@ -355,8 +355,11 @@ CMakeFiles/ascii.dir/main.cpp.o: ../main.cpp \
   /opt/homebrew/include/opencv4/opencv2/stitching/detail/blenders.hpp \
   /opt/homebrew/include/opencv4/opencv2/video.hpp \
   /opt/homebrew/include/opencv4/opencv2/video/tracking.hpp \
-  /opt/homebrew/include/opencv4/opencv2/video/background_segm.hpp
+  /opt/homebrew/include/opencv4/opencv2/video/background_segm.hpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/thread
 
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/thread:
 
 /opt/homebrew/include/opencv4/opencv2/video/tracking.hpp:
 

@@ -357,4 +357,5 @@ CMakeFiles/ascii.dir/main.cpp.o
  /opt/homebrew/include/opencv4/opencv2/video.hpp
  /opt/homebrew/include/opencv4/opencv2/video/tracking.hpp
  /opt/homebrew/include/opencv4/opencv2/video/background_segm.hpp
+ /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/thread
 

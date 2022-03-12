@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <string>
+#include <thread>
 
 using namespace cv;
 
@@ -37,6 +38,10 @@ void turnImageToAscii(Mat *input)
     }
 }
 
+void t_resize(Mat *image){
+    cv::resize(*image, *image, Size(320, 240), INTER_LINEAR);
+}
+
 int main()
 {
 
@@ -55,8 +60,13 @@ int main()
     {
         cap >> image;
         imageDesatAndResize(&image, &small, 140, 51);
-        //cv::imshow("RAW", image);
-        turnImageToAscii(&small);
+        
+        std::thread thread1(t_resize, &image);
+        std::thread thread2(turnImageToAscii, &small);
+        thread1.join();
+        thread2.join();
+
+        cv::imshow("RAW", image);
         if (waitKey(20) >= 0)
             running = false;
     }
