@@ -65,7 +65,7 @@ void turnImageToAscii(Mat *input)
     return;
 
   int cn = input->channels();
-  static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._         ";
+  static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._     ";
 
   std::cout << "\033[1;1H\033[1;32m";
   for (int i = 0; i < input->rows; i++)
