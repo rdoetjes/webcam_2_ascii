@@ -93,7 +93,6 @@ inline bool file_exists(const char *name)
 
 bool arguments(VideoCapture *cap, int argc, char **args)
 {
-  std::cout << argc;
   if (argc == 1)
     cap->open(0);
   else if (file_exists(args[1]))
