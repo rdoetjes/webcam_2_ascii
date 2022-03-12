@@ -9,7 +9,7 @@ void setResolutionCam(VideoCapture *cap, const uint width, const uint height)
     cap->set(CAP_PROP_FRAME_HEIGHT, height);
 }
 
-void processImage(Mat *input, Mat *output, const int width, const int height)
+void imageDesatAndResize(Mat *input, Mat *output, const int width, const int height)
 {
     cvtColor(*input, *output, COLOR_BGR2GRAY);
     cv::resize(*output, *output, Size(width, height), INTER_LINEAR);
@@ -19,10 +19,12 @@ long map(int x, int in_min, int in_max, int out_min, int out_max) {
    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void turnToAscii(Mat *input)
+void turnImageToAscii(Mat *input)
 {
     int cn = input->channels();
     static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._         ";
+
+    std::cout << "\033[1;1H";
     for (int i = 0; i < input->rows; i++)
     {
         std::string s = "";
@@ -52,9 +54,9 @@ int main()
     while (running)
     {
         cap >> image;
-        processImage(&image, &small, 140, 51);
+        imageDesatAndResize(&image, &small, 140, 51);
         //cv::imshow("RAW", image);
-        turnToAscii(&small);
+        turnImageToAscii(&small);
         if (waitKey(20) >= 0)
             running = false;
     }
