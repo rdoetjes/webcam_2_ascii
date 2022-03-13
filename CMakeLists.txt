@@ -8,8 +8,8 @@ find_package( OpenCV 4 REQUIRED )
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
 
-include_directories( /opt/homebrew/include/opencv4 )
-link_directories( /opt/homebrew/lib/ )
+include_directories( /usr/local/Cellar/opencv/4.5.5/include/opencv4 )
+link_directories( /usr/local/Cellar/opencv/4.5.5/lib )
 
 add_executable(${PROJECT_NAME} main.cpp)
 

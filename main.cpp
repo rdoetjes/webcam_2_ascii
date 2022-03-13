@@ -119,6 +119,7 @@ int main(int argc, char **argv)
   if (!cap.isOpened())
     return 1;
 
+	const static double delay_ms = (1/cap.get(CAP_PROP_FPS))*1000;
   // smallest native resolution this web cam has.
   setResolutionCam(&cap, 640, 480);
 
@@ -132,7 +133,7 @@ int main(int argc, char **argv)
       return 0;
 
     // turns the image into a 140, 51 pixel black and white image, that will map to 140x51 chars
-    imageDesatAndResize(&image, &small, 140, 51);
+    imageDesatAndResize(&image, &small, 250, 91);
 
     // resize the life feed to 320x240 to display, and capture keyboard events
     std::thread thread1(t_resize, &image, 320, 240);
@@ -146,8 +147,10 @@ int main(int argc, char **argv)
     // show the web cam feed
     cv::imshow("RAW", image);
 
-    if (waitKey(41) >= 0)
-      running = false;
+		if (waitKey(delay_ms) >= 0)
+            break;
+   //if (waitKey(41) >= 0)
+   //   running = false;
   }
 
   return 0;
