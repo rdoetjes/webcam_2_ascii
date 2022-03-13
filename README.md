@@ -9,6 +9,7 @@ export CC=/usr/bin/clang
 Edit the CMakeFiles.txt to opint to your OpenCV directorys
 
 ```
+cd webcam_2_ascii
 mkdir build
 cd build
 cmake ..
