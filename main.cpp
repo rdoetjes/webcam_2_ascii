@@ -6,6 +6,10 @@
 
 using namespace cv;
 
+#define TERM_WIDTH 140
+#define TERM_HEIGTH 51
+#define MSWAIT 5
+
 /*
 Sets the web came to the closest native resolution
 
@@ -65,7 +69,7 @@ void turnImageToAscii(Mat *input)
     return;
 
   int cn = input->channels();
-  static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._     ";
+  static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._  ";
 
   std::cout << "\033[1;1H\033[1;32m";
   for (int i = 0; i < input->rows; i++)
@@ -119,11 +123,10 @@ int main(int argc, char **argv)
   if (!cap.isOpened())
     return 1;
 
-	const static double delay_ms = (1/cap.get(CAP_PROP_FPS))*1000;
   // smallest native resolution this web cam has.
   setResolutionCam(&cap, 640, 480);
 
-  std::cout << "Set your terminal to 140x51" << std::endl;
+  std::cout << "Set your terminal to " << TERM_WIDTH << "x" << TERM_HEIGTH << std::endl;
   std::cin.get();
 
   while (running)
@@ -133,7 +136,7 @@ int main(int argc, char **argv)
       return 0;
 
     // turns the image into a 140, 51 pixel black and white image, that will map to 140x51 chars
-    imageDesatAndResize(&image, &small, 250, 91);
+    imageDesatAndResize(&image, &small, TERM_WIDTH, TERM_HEIGTH);
 
     // resize the life feed to 320x240 to display, and capture keyboard events
     std::thread thread1(t_resize, &image, 320, 240);
@@ -147,10 +150,8 @@ int main(int argc, char **argv)
     // show the web cam feed
     cv::imshow("RAW", image);
 
-		if (waitKey(delay_ms) >= 0)
+		if (waitKey(MSWAIT) >= 0)
             break;
-   //if (waitKey(41) >= 0)
-   //   running = false;
   }
 
   return 0;
