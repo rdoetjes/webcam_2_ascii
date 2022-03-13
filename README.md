@@ -1,5 +1,10 @@
 # webcam_2_ascii
 
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/2UrV54EdGpM/0.jpg)](https://www.youtube.com/watch?v=2UrV54EdGpM)
+
+
+# For Mac OS homebrew OpenCV
 Build on mac with homebrew OpenCV requires clang
 
 export CXX=/usr/bin/clang++
