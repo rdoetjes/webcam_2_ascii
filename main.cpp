@@ -84,7 +84,7 @@ void turnImageToAscii(Mat *input, const uint fps_count)
   int linestyle = 8;
   int baseline=0;
 
-  cv::Mat output(1080, 2048, CV_8UC3, cv::Scalar(0));
+  cv::Mat output(1080, 1920, CV_8UC3, cv::Scalar(0));
  
   cv::Ptr<cv::freetype::FreeType2> ft2;
   ft2 = cv::freetype::createFreeType2();
@@ -102,9 +102,7 @@ void turnImageToAscii(Mat *input, const uint fps_count)
     }
 
     Size textSize = ft2->getTextSize(s,fontHeight,thickness,&baseline);
-    std::cout << std::to_string(textSize.height) << std::endl;
-    Point textOrg(1, (10 * i));
-    
+    Point textOrg(1, (10 * i));    
     ft2->putText(output, s, textOrg, fontHeight, Scalar(0,255,0), thickness, linestyle, true );
   }
 
