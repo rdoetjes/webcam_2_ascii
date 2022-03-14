@@ -91,7 +91,7 @@ void turnImageToAscii(Mat *input, const uint fps_count)
   ft2->loadFontData( "./ibm.ttf", 0 );
   
   std::string sfcount = std::to_string(fps_count);
-  padTo(sfcount, 4, '0');
+  padTo(sfcount, 6, '0');
   std::string p = "./render/" +  sfcount + ".png";
 
   for (int i = 0; i < input->rows; i++)
