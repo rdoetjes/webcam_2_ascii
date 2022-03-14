@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <opencv2/freetype.hpp>
 #include <string>
 #include <thread>
 #include <sys/stat.h>
@@ -7,7 +8,6 @@
 #include <string.h>
 
 using namespace cv;
-using namespace Magick;
 
 #define TERM_WIDTH 280
 #define TERM_HEIGTH 101
@@ -79,32 +79,39 @@ void turnImageToAscii(Mat *input, const uint fps_count)
 
   int cn = input->channels();
   static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._   ";
+  int fontHeight = 10;
+  int thickness = -1;
+  int linestyle = 8;
+  int baseline=0;
 
-  InitializeMagick(nullptr);
-  Image image( "1920x1080", "black" );
-  image.font("Courier");
-  image.fillColor(Color("GREEN"));
-  image.strokeColor(Color("GREEN"));
-  image.fontPointsize(10); 
-
-  std::list<Drawable> text_draw_list;
+  cv::Mat output(1080, 1920, CV_8UC3, cv::Scalar(0));
+ 
+  cv::Ptr<cv::freetype::FreeType2> ft2;
+  ft2 = cv::freetype::createFreeType2();
+  ft2->loadFontData( "./COURIER.ttf", 0 );
   
-  std::string s = "";
   std::string sfcount = std::to_string(fps_count);
   padTo(sfcount, 4, '0');
   std::string p = "./render/" +  sfcount + ".png";
 
   for (int i = 0; i < input->rows; i++)
   {
+    std::string s = "";
     for (int j = 0; j < input->cols; j++){
       s += chars[map(input->at<uint8_t>(i, j), 255, 0, 0, strlen(chars) - 1)];
     }
-    s += "\r\n";
+
+    Size textSize = ft2->getTextSize(s,fontHeight,thickness,&baseline);
+    Point textOrg((output.cols - textSize.width) / 2, (textSize.height * i)*2);
+    
+    ft2->putText(output, s, textOrg, fontHeight, Scalar(0,255,0), thickness, linestyle, true );
   }
 
-  text_draw_list.push_back( DrawableText(0, 0, s));
-  image.draw(text_draw_list);
-  image.write( p ); 
+
+  if(thickness > 0)
+    baseline += thickness;
+  imwrite(p, output);
+  //delete(ft2);
 }
 
 /*
@@ -152,8 +159,6 @@ int main(int argc, char **argv)
   // smallest native resolution this web cam has.
   setResolutionCam(&cap, 640, 480);
 
-  std::cout << "Set your terminal to " << TERM_WIDTH << "x" << TERM_HEIGTH << std::endl;
-  std::cin.get();
   static uint fps_count = 0;
   while (running)
   {
