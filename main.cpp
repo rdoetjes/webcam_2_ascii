@@ -78,7 +78,7 @@ void turnImageToAscii(Mat *input, const uint fps_count)
     return;
 
   int cn = input->channels();
-  static char chars[] = "Æ@#W$9876543210?!abc;:+=-,._   ";
+  static char chars[] = "B@#W$9876543210?!abc;:+=-,._   ";
   int fontHeight = 12;
   int thickness = -1;
   int linestyle = 8;
