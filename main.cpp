@@ -72,7 +72,7 @@ Each pixel maps to a single character. So when you have 80x24 char screen the in
 
 input is the rescaled, grey scale image to be mapped in ascii chars
 */
-void turnImageToAscii(Mat *input, const uint fps_count)
+void turnImageToAscii(Mat *input, const char *path, const uint fps_count)
 {
   if (input == NULL)
     return;
@@ -92,7 +92,7 @@ void turnImageToAscii(Mat *input, const uint fps_count)
   
   std::string sfcount = std::to_string(fps_count);
   padTo(sfcount, 6, '0');
-  std::string p = "./render/" +  sfcount + ".png";
+  std::string p = path + std::string("/") +  sfcount + ".png";
 
   for (int i = 0; i < input->rows; i++)
   {
@@ -121,42 +121,66 @@ void t_resize(Mat *image, const int width, const int height)
   cv::resize(*image, *image, Size(width, height), INTER_LINEAR);
 }
 
-inline bool file_exists(const char *name)
+bool file_exists(const char *name)
 {
   struct stat buffer;
   return (stat(name, &buffer) == 0);
 }
 
-bool arguments(VideoCapture *cap, int argc, char **args)
-{
-  if (argc == 1)
-    cap->open(0);
-  else if (file_exists(args[1]))
-    cap->open(args[1]);
-  else
-    return false;
+/*
+Returns > 0 when dir is found
+Returns 0 when dir is not a dir or can't be found
+Returns -1 when if an error occurs
+*/
+int dir_exits(const char *path){
+   struct stat info;
 
-  return true;
+    int statRC = stat( path, &info );
+    if( statRC != 0 )
+    {
+        if (errno == ENOENT || errno == ENOTDIR) return 0; 
+        return -1;
+    }
+
+    return ( info.st_mode & S_IFDIR ) ? 1 : 0;
+}
+
+void arguments(VideoCapture *cap, int argc, char **args)
+{
+  if (argc != 3)
+  {
+    std::cerr << args[0] << "<source video> <render directory>" << std::endl;
+    exit(1);
+  }
+  
+  if (!file_exists(args[1])){
+    std::cerr << "could not find file " << args[1] << std::endl;
+    exit(1);
+  }
+
+  if (dir_exits(args[2])!=1){
+    std::cerr << "could not find or use target directory " << args[2] << std::endl;
+    exit(1);
+  }
+
+  if (cap==nullptr){
+    std::cerr << "could not initialize video capture" << std::endl;
+    exit(1);
+  } else{
+    cap->open(args[1]);
+  }
 }
 
 int main(const int argc, char **argv)
 {
-
   Mat image, small;
   bool running = true;
   VideoCapture cap;
 
-  if (!arguments(&cap, argc, argv))
-  {
-    std::cerr << "Can't open video source" << std::endl;
-    exit(1);
-  }
-
+  arguments(&cap, argc, argv);
+  
   if (!cap.isOpened())
     return 1;
-
-  // smallest native resolution this web cam has.
-  setResolutionCam(&cap, 640, 480);
 
   static uint fps_count = 0;
   while (running)
@@ -172,7 +196,7 @@ int main(const int argc, char **argv)
     std::thread thread1(t_resize, &image, 320, 240);
 
     // takes the small black and white image and maps each pixel to a character and prints it to the terminal
-    std::thread thread2(turnImageToAscii, &small, fps_count);
+    std::thread thread2(turnImageToAscii, &small, argv[2], fps_count);
 
     thread1.join();
     
