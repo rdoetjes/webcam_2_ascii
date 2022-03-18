@@ -4,7 +4,6 @@
 #include <thread>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <Magick++.h>
 #include <string.h>
 
 using namespace cv;
